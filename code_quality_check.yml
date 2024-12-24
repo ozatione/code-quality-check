@@ -1,0 +1,52 @@
+name: Code Quality and Security Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js for ESLint (if JavaScript project)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Step 3: Install ESLint (or other linters for your project)
+      - name: Install Dependencies
+        run: |
+          npm install
+
+      # Step 4: Run ESLint to check for code quality issues
+      - name: Run ESLint
+        run: |
+          npm run lint # Assuming you have a lint script defined in package.json
+
+  secrets:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # Step 2: Install git-secrets to check for exposed secrets
+      - name: Install git-secrets
+        run: |
+          sudo apt-get install git-secrets
+
+      # Step 3: Run git-secrets to check for exposed credentials or sensitive data
+      - name: Run git-secrets
+        run: |
+          git secrets --scan
